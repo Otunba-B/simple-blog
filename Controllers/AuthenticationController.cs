@@ -175,11 +175,11 @@ namespace MarkTest.Controllers
 
             else if (user != null)
             {
-                //var roleName = await roleManager.FindByNameAsync("Admin");
                 var roleName = await userManager.GetUsersInRoleAsync("Admin");
 
                 if (roleName.Contains(user))
                 {
+
                     Post post = new Post
                     {
                         Author = postMessage.Author,
