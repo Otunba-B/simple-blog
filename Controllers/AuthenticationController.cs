@@ -167,18 +167,18 @@ namespace MarkTest.Controllers
         public async Task<IActionResult> CreatePost(string Username, PostMatch postMessage)
         {
             var user = await userManager.FindByNameAsync(Username);
-            var userRole = await roleManager.RoleExistsAsync("Admin");
+            var userRole = await userManager.IsInRoleAsync(user, "admin");
             if (user == null || !userRole)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Check the username, or visit our register page to have access to this feature" });
             }
 
-            else if (user != null)
+            else if (user != null && userRole)
             {
-                var roleName = await userManager.GetUsersInRoleAsync("Admin");
+                //var roleName = await userManager.GetUsersInRoleAsync("Admin");
 
-                if (roleName.Contains(user))
-                {
+                //if (roleName.Contains(user))
+                //{
 
                     Post post = new Post
                     {
@@ -193,11 +193,17 @@ namespace MarkTest.Controllers
                     _bloggContext.Posts.Add(post);
                     _bloggContext.SaveChanges();
                     return Ok(new Response { Status = "Success", Message = "Post Approved and Created. " });
-                }
-                else
-                    return Ok(new Response { Status = "Pending Approval", Message = "An Admin has to approve your post first." });
+                //}
+               
             }
-            return Ok(new Response { Status = "Done", Message = "post created" });
+            else
+                return Ok(new Response { Status = "Pending Approval", Message = "An Admin has to approve your post first." });
         }
+
+        [HttpPost]
+        [Route("Add Comment")]
+        [Authorize]
+
+        public async Task<IActionResult> AddComment ()
     }
 }
