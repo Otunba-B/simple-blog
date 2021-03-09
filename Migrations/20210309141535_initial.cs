@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MarkTest.Migrations
 {
-    public partial class BloggMigration : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -161,11 +161,13 @@ namespace MarkTest.Migrations
                 {
                     PostId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    BlogPost = table.Column<string>(nullable: true),
                     PostTitle = table.Column<string>(nullable: true),
                     PostDate = table.Column<DateTime>(nullable: false),
                     Category = table.Column<string>(nullable: true),
                     Author = table.Column<string>(nullable: true),
-                    Photo = table.Column<byte[]>(nullable: true),
+                    Photo = table.Column<string>(nullable: true),
+                    status = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -186,8 +188,9 @@ namespace MarkTest.Migrations
                     CommentId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CommentDate = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<string>(nullable: true),
-                    PostId = table.Column<int>(nullable: true)
+                    UserComment = table.Column<string>(nullable: true),
+                    PostId = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -197,7 +200,7 @@ namespace MarkTest.Migrations
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "PostId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comments_AspNetUsers_UserId",
                         column: x => x.UserId,

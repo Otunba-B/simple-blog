@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 
 namespace MarkTest.Data.Entities
 {
-    public class Comment
+    public class CommentMatch 
     {
+        public string UserComment { get; set; }
         public int CommentId { get; set; }
         public DateTime CommentDate { get; set; }
-        public string  UserComment { get; set; }
         public int PostId { get; set; }
-        public ApplicationUser User { get; set; }
-        public Post Post { get; set; }
+     //   public PostMatch commentPostMatch { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace MarkTest.Data.Entities
     }
     public class Post
     {
+        public string BlogPost { get; set; }
         public int PostId { get; set; }
         public string PostTitle { get; set; }
         public DateTime PostDate { get; set; }

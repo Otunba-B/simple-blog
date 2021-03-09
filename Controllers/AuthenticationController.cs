@@ -162,8 +162,8 @@ namespace MarkTest.Controllers
         }
 
         [HttpPost]
-        [Route("Create Post")]
-        [Authorize]
+        [Route("create-post")]
+        //[Authorize]
         public async Task<IActionResult> CreatePost(string Username, PostMatch postMessage)
         {
             var user = await userManager.FindByNameAsync(Username);
@@ -188,7 +188,8 @@ namespace MarkTest.Controllers
                         PostDate = postMessage.PostDate,
                         PostTitle = postMessage.PostTitle,
                         PostId = postMessage.PostId,
-                        status = postMessage.status
+                        status = postMessage.status,
+                        BlogPost = postMessage.BlogPost
                     };
                     _bloggContext.Posts.Add(post);
                     _bloggContext.SaveChanges();
@@ -201,9 +202,32 @@ namespace MarkTest.Controllers
         }
 
         [HttpPost]
-        [Route("Add Comment")]
-        [Authorize]
+        [Route("add-comment")]
+        //[Authorize]
 
-        public async Task<IActionResult> AddComment ()
+        public async Task<IActionResult> AddComment (string Username, CommentMatch commentMessage)
+        {
+            var user = await userManager.FindByNameAsync(Username);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "You need to be a registered member of our community" });
+            }
+            else if (user != null)
+            {
+                var comment = new Comment
+                {
+                    UserComment = commentMessage.UserComment,
+                    CommentDate = DateTime.Now,
+                    PostId = commentMessage.PostId,
+
+                };
+                if(comment.PostId != )
+                _bloggContext.Comments.Add(comment);
+                _bloggContext.SaveChanges();
+                return Ok(new Response { Status = "Success", Message = "Comment Added" });
+            }
+            else
+                return StatusCode(500, new Response { Status = "Error", Message = "Check your input and try again" });
+        }
     }
 }

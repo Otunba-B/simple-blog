@@ -103,8 +103,11 @@ namespace MarkTest.Migrations
                     b.Property<DateTime>("CommentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PostId")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserComment")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -156,6 +159,9 @@ namespace MarkTest.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Author")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BlogPost")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Category")
@@ -318,7 +324,9 @@ namespace MarkTest.Migrations
                 {
                     b.HasOne("MarkTest.Data.Entities.Post", "Post")
                         .WithMany()
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("MarkTest.Data.Entities.ApplicationUser", "User")
                         .WithMany()

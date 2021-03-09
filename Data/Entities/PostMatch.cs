@@ -13,6 +13,7 @@ namespace MarkTest.Data.Entities
         public string Category { get; set; }
         public string Author { get; set; }
         public string Photo { get; set; }
+        public string BlogPost { get; set; }
         public postStatus status { get; set; }
     }
 }
