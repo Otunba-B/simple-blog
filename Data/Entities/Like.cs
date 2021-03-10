@@ -9,6 +9,8 @@ namespace MarkTest.Data.Entities
     {
         public int LikeId { get; set; }
         public DateTime LikeDate { get; set; }
+        public int? PostId { get; set; }
+        public int? CommentId { get; set; }
 
         public ApplicationUser User { get; set; }
         public Post Post { get; set; }

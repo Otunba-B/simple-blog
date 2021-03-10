@@ -204,7 +204,6 @@ namespace MarkTest.Controllers
         [HttpPost]
         [Route("add-comment")]
         //[Authorize]
-
         public async Task<IActionResult> AddComment (string Username, CommentMatch commentMessage)
         {
             var user = await userManager.FindByNameAsync(Username);
@@ -221,13 +220,89 @@ namespace MarkTest.Controllers
                     PostId = commentMessage.PostId,
 
                 };
-                if(comment.PostId != )
-                _bloggContext.Comments.Add(comment);
-                _bloggContext.SaveChanges();
-                return Ok(new Response { Status = "Success", Message = "Comment Added" });
+                var postCheck = _bloggContext.Posts.Single(p => p.PostId == comment.PostId);
+                if (postCheck != null)
+                {
+                    _bloggContext.Comments.Add(comment);
+                    _bloggContext.SaveChanges();
+                    return Ok(new Response { Status = "Success", Message = "Comment Added" });
+                }
+                else
+                    return StatusCode(StatusCodes.Status404NotFound, new Response { Message = "Invalid Post ID. Post does not exist", Status = "Error" });
             }
             else
                 return StatusCode(500, new Response { Status = "Error", Message = "Check your input and try again" });
+        }
+
+        [HttpPost]
+        [Route("like-post")]
+        //[Authorize]
+        public async Task<IActionResult> LikePost(string Username, LikePostMatch postLike)
+        {
+            var user = await userManager.FindByNameAsync(Username);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "You need to be a registered member of our community" });
+            }
+            else
+            {
+                var like = new Like
+                {
+                    PostId = postLike.PostId,
+                    LikeDate = DateTime.Now,
+                };
+                try
+                {
+                    var postCheck = _bloggContext.Posts.Single(p => p.PostId == like.PostId);
+                    if (postCheck != null)
+                    {
+                        _bloggContext.Likes.Add(like);
+                        _bloggContext.SaveChanges();
+                        return Ok(new Response { Status = "Success", Message = "Post Liked " });
+                    }
+                }
+                catch (Exception)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, new Response { Message = "Invalid Post ID. Post does not exist", Status = "Error" });
+                }
+            }
+            return StatusCode(500, new Response { Status = "Error", Message = "Check your input and try again" });
+        }
+
+        [HttpPost]
+        [Route("like-comment")]
+        //[Authorize]
+        public async Task<IActionResult> LikeComment(string Username, LikeCommentMatch likeComment)
+        {
+            var user = await userManager.FindByNameAsync(Username);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "You need to be a registered member of our community" });
+            }
+            else
+            {
+                var like = new Like
+                {
+                    //PostId = likeComment.PostId,
+                    LikeDate = DateTime.Now,
+                    CommentId = likeComment.CommentId
+                };
+                try
+                {
+                    var commentCheck = _bloggContext.Comments.Single(p => p.CommentId == like.CommentId);
+                    if (commentCheck != null)
+                    {
+                        _bloggContext.Likes.Add(like);
+                        _bloggContext.SaveChanges();
+                        return Ok(new Response { Status = "Success", Message = "Comment Liked " });
+                    }
+                }
+                catch (Exception)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, new Response { Message = "Invalid Comment ID. Comment does not exist", Status = "Error" });
+                }
+            }
+            return StatusCode(500, new Response { Status = "Error", Message = "Check your input and try again" });
         }
     }
 }
